@@ -2,7 +2,6 @@ doc_config.py
 build*/
 ._*
 *.pyc
-.*
 python/ecto/ui/uic.py
 \#*\#
 *~
