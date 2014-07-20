@@ -93,6 +93,17 @@ bool scheduler::execute(unsigned num_iters)
   return (state_ > 0); // NOT thread-safe!
 }
 
+bool scheduler::execute_threaded(unsigned num_iters)
+{
+  //std::cerr << this << " scheduler::execute(" << num_iters << ")\n";
+  execute_async(num_iters);
+  {
+    ScopedGILRelease do_not_block_python_threading;
+    run();
+  }
+  return (state_ > 0); // NOT thread-safe!
+}
+
 bool scheduler::execute_async(unsigned num_iters)
 {
 

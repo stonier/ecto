@@ -38,6 +38,10 @@ namespace ecto {
     template <typename T> bool execute1 (T& s, unsigned arg1)
     { return s.execute(arg1); }
 
+    template <typename T> bool execute_threaded0 (T& s) { return s.execute_threaded(); }
+    template <typename T> bool execute_threaded1 (T& s, unsigned arg1)
+    { return s.execute_threaded(arg1); }
+
     template <typename T> bool execute_async0 (T& s)
     { return s.execute_async(); }
     template <typename T> bool execute_async1 (T& s, unsigned arg1)
@@ -55,6 +59,8 @@ namespace ecto {
       bp::class_<T, boost::noncopyable>(name, bp::init<ecto::plasm::ptr>())
         .def("execute", &execute0<T>)
         .def("execute", &execute1<T>, arg("niter"))
+        .def("execute_threaded", &execute_threaded0<T>)
+        .def("execute_threaded", &execute_threaded1<T>, arg("niter"))
         .def("execute_async", &execute_async0<T>)
         .def("execute_async", &execute_async1<T>, arg("niter"))
 

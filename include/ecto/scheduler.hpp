@@ -43,6 +43,61 @@
 
 namespace ecto {
 
+/*****************************************************************************
+ ** Gil
+ *****************************************************************************/
+/**
+ * Utility for releasing the gil so c++ objects run in a thread don't block.
+ * Simply instantiate a variable of this class (we do for run_xxx methods)
+ * that holds for the scope of the thread function in the c++ and call
+ * it in the following way from python.
+ *
+ * \code{.py}
+ * thread = threading.Thread(name='scheduler', target=sched.run)
+ * thread.start()
+ * \endcode
+ *
+ * @see https://wiki.python.org/moin/boost.python/HowTo#Multithreading_Support_for_my_function
+ * @see http://www.codevate.com/blog/7-concurrency-with-embedded-python-in-a-multi-threaded-c-application
+ *
+ * Note : defining a policy might be a good general idea to shift the required code
+ * to where the python binding call is made (see second link above).
+ */
+class ScopedGILRelease
+{
+public:
+    inline ScopedGILRelease()
+    {
+        m_thread_state = PyEval_SaveThread();
+    }
+
+    inline ~ScopedGILRelease()
+    {
+        PyEval_RestoreThread(m_thread_state);
+        m_thread_state = NULL;
+    }
+
+private:
+    PyThreadState * m_thread_state;
+};
+
+class ScopedGILAcquire
+{
+public:
+    inline ScopedGILAcquire(){
+        state = PyGILState_Ensure();
+    }
+
+    inline ~ScopedGILAcquire(){
+        PyGILState_Release(state);
+    }
+private:
+    PyGILState_STATE state;
+};
+/*****************************************************************************
+ ** Scheduler
+ *****************************************************************************/
+
 /**
  * TODO: Doc this class.
  * TODO: Need to share io_svc_ instances with other entities (schedulers+)?
@@ -80,6 +135,16 @@ public:
    *   num_iters is 0.
    */
   bool execute(unsigned num_iters = 0);
+  /**
+   * Thread ready version of execute. This one releases the GIL so the thread
+   * can be truly parallelised. Put this function as the target of a python thread.
+   * TODO : create the thread here.
+   * @param[in] num_iters The number of iterations to execute the plasm. 0 indicates
+   *   that the plasm should be executed until some cell::process() call
+   *   returns ecto::QUIT. \attention This call will block indefinately if
+   *   num_iters is 0.
+   */
+  bool execute_threaded(unsigned num_iters = 0);
   /** Kick off an asynchronous plasm execution for num_iters iterations.
    * No actual work will be done without calling the run*() methods.
    * @param[in] num_iters The number of iterations to execute the plasm. 0 indicates
@@ -132,6 +197,7 @@ public:
   inline State state() const;
 
 private:
+
   inline State state(State);
   void execute_init(unsigned num_iteRelWithDebInfors);
   void execute_iter(unsigned cur_iter, unsigned num_iters,
