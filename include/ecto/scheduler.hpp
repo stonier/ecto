@@ -44,7 +44,8 @@
 namespace ecto {
 
 /*****************************************************************************
- ** Gil
+ ** Gil - deprecate these for the functions in include/ecto/python.hpp
+ ** but they are currently causing problems so still using these here.
  *****************************************************************************/
 /**
  * Utility for releasing the gil so c++ objects run in a thread don't block.
@@ -62,6 +63,9 @@ namespace ecto {
  *
  * Note : defining a policy might be a good general idea to shift the required code
  * to where the python binding call is made (see second link above).
+ *
+ * TODO: deprecate these for ecto/python.hpp's gil release objects. Currently they have issues
+ * when closing down though (mutex lock problem if we use ECTO_SCOPED_GILRELEASE)
  */
 class ScopedGILRelease
 {

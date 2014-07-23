@@ -99,6 +99,7 @@ bool scheduler::execute_threaded(unsigned num_iters)
   execute_async(num_iters);
   {
     ScopedGILRelease do_not_block_python_threading;
+    //ECTO_SCOPED_GILRELEASE();  // TODO : currently has problems, but use this eventually
     run();
   }
   return (state_ > 0); // NOT thread-safe!
