@@ -58,7 +58,12 @@ namespace {
               << "*** when back in the interpreter thread.\n"
               << "*** or Ctrl-\\ (backslash) for a hard stop.\n" << std::endl;
     SINGLE_THREADED_SIGINT_SIGNAL();
-    PyErr_SetInterrupt();
+    // This may not be wise to have here. If we don't use it, the scheduler will gracefully
+    // abort it's execution (if in the middle of one), exit and return to the
+    // python ecto script. If this is here, it will only return after execution unless
+    // PyErr_CheckSignals is called. Which we don't want to do anyway (want to gracefully
+    // abort execution), refer to https://github.com/plasmodic/ecto/pull/250.
+    // PyErr_SetInterrupt();
   }
 } // End of anonymous namespace.
 
