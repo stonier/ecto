@@ -30,7 +30,7 @@
 #pragma once
 
 #include <string>
-#include "graph_types.hpp"
+#include "types.hpp"
 
 namespace ecto {
 namespace graph {

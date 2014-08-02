@@ -29,7 +29,7 @@
 #include <ecto/scheduler.hpp>
 
 #include <ecto/cell.hpp>
-#include <ecto/impl/graph_utils.hpp>
+#include <ecto/graph/utilities.hpp>
 #include <ecto/log.hpp>
 #include <ecto/plasm.hpp>
 #include <ecto/vertex.hpp>

@@ -32,12 +32,12 @@
 #include <ecto/ecto.hpp>
 #include <ecto/edge.hpp>
 #include <boost/graph/graphviz.hpp>
-#include <ecto/impl/graph_types.hpp>
+#include <ecto/graph/types.hpp>
 #include <ecto/serialization/registry.hpp>
 #include <ecto/serialization/cell.hpp>
 #include <ecto/tendrils.hpp>
 #include <ecto/vertex.hpp>
-#include <ecto/impl/graph_utils.hpp>
+#include <ecto/graph/utilities.hpp>
 #include <boost/format.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 #include <boost/regex.hpp>
@@ -268,7 +268,11 @@ namespace ecto
   {
     if (configured) return;
     /****************************************
+<<<<<<< HEAD
      ** Unsorted Configuration
+=======
+     ** Unsorted Configuration - Deprecated
+>>>>>>> 82c282b... directed configuration
      ****************************************/
     // BOOST_FOREACH(impl::ModuleVertexMap::value_type& x, impl_->mv_map)
     //      {

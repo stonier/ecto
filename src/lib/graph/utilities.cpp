@@ -28,7 +28,7 @@
 
 #include <ecto/cell.hpp>
 #include <ecto/edge.hpp>
-#include <ecto/impl/graph_types.hpp>
+#include <ecto/graph/types.hpp>
 #include <ecto/log.hpp>
 #include <ecto/plasm.hpp>
 #include <ecto/python.hpp>
