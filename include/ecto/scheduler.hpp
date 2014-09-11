@@ -44,61 +44,6 @@
 namespace ecto {
 
 /*****************************************************************************
- ** Gil - deprecate these for the functions in include/ecto/python.hpp
- ** but they are currently causing problems so still using these here.
- *****************************************************************************/
-/**
- * Utility for releasing the gil so c++ objects run in a thread don't block.
- * Simply instantiate a variable of this class (we do for run_xxx methods)
- * that holds for the scope of the thread function in the c++ and call
- * it in the following way from python.
- *
- * \code{.py}
- * thread = threading.Thread(name='scheduler', target=sched.run)
- * thread.start()
- * \endcode
- *
- * @see https://wiki.python.org/moin/boost.python/HowTo#Multithreading_Support_for_my_function
- * @see http://www.codevate.com/blog/7-concurrency-with-embedded-python-in-a-multi-threaded-c-application
- *
- * Note : defining a policy might be a good general idea to shift the required code
- * to where the python binding call is made (see second link above).
- *
- * TODO: deprecate these for ecto/python.hpp's gil release objects. Currently they have issues
- * when closing down though (mutex lock problem if we use ECTO_SCOPED_GILRELEASE)
- */
-class ScopedGILRelease
-{
-public:
-    inline ScopedGILRelease()
-    {
-        m_thread_state = PyEval_SaveThread();
-    }
-
-    inline ~ScopedGILRelease()
-    {
-        PyEval_RestoreThread(m_thread_state);
-        m_thread_state = NULL;
-    }
-
-private:
-    PyThreadState * m_thread_state;
-};
-
-class ScopedGILAcquire
-{
-public:
-    inline ScopedGILAcquire(){
-        state = PyGILState_Ensure();
-    }
-
-    inline ~ScopedGILAcquire(){
-        PyGILState_Release(state);
-    }
-private:
-    PyGILState_STATE state;
-};
-/*****************************************************************************
  ** Scheduler
  *****************************************************************************/
 
